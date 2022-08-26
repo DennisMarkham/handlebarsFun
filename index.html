@@ -1,0 +1,73 @@
+<html>
+<head>
+<!-- Include Handlebars from a CDN -->
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+<meta charset="UTF-8">
+</head>
+<body>
+	<!-- this doesn't make any sense, why are both identical to "love template"? -->
+<script id="people-template" type="text/x-handlebars-template">
+    <p>Hello, I am {{me}}</p>
+
+    <p>The people I love are  {{#each love}}
+    <li>{{this}} &#128151</li>
+  {{/each}}</p>
+
+  <p>The people I hate are  {{#each hate}}
+    <li>{{>myPartial parameter=this }} &#128293</li>
+  {{/each}}</p>
+
+  {{>myPartial parameter='b'}}
+</script>
+<div class="people"></div>
+
+
+	<script>
+
+		Handlebars.registerPartial('myPartial', '{{parameter}} the idiot');
+
+	Handlebars.registerHelper('loud', function (aString) {
+    return aString.toUpperCase()
+})
+
+//why is the HTML lost
+		Handlebars.registerHelper('bold', function (aString) {
+    var result = "<b>" + Handlebars.escapeExpression(aString) + "</b>";
+  return new Handlebars.SafeString(result);
+})
+
+// grab the source
+let source = document.querySelector("#people-template").innerHTML;
+
+// compile it using Handlebars
+let template = Handlebars.compile(source);
+
+// create context
+let context = {
+    love: [
+    "Yehuda Katz",
+    "Alan 'The Yellow Dart' Johnson",
+    "Charles Jolley",
+  ],
+  hate:
+  [
+  "Joe Schmidt",
+  "Jane Doe",
+  "John Smith"
+  ],
+  me: "Dennis"
+};
+
+// get the HTML after passing the template the context
+let html = template(context);
+
+// get the element to set the new HTML into
+let destination = document.querySelector(".people");
+
+// set the new HTML
+destination.innerHTML = html;
+
+
+	</script>
+</body>
+</html>
